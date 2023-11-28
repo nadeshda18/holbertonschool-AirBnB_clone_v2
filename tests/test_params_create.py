@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Test file for the HBNBCommand console.
+"""
+
+
 import subprocess
 import unittest
 

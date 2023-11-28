@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Test file for the console command with parameters.
+"""
+
 
 import subprocess
 import unittest
