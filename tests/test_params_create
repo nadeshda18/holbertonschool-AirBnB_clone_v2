@@ -5,6 +5,7 @@ Test file for the HBNBCommand console.
 
 
 import subprocess
+import unittest
 import os
 import sys
 
