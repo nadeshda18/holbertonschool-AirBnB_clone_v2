@@ -6,6 +6,8 @@ Test file for the console command with parameters.
 
 import subprocess
 import unittest
+import os
+import sys
 from io import StringIO
 from unittest.mock import patch
 from console import HBNBCommand
