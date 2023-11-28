@@ -113,47 +113,41 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-def do_create(self, args):
-    """ Create an object of any class with given parameters """
-    if not args:
-        print("** class name missing **")
-        return
-    elif args.split(' ')[0] not in HBNBCommand.classes:
-        print("** class doesn't exist **")
-        return
+    def do_create(self, arg):
+        """Create a new instance of a class with given parameters."""
+        args = arg.split()
 
-    # Extract class name and parameters from the input
-    class_name, *params = args.split(' ')
-    
-    # Create a dictionary to store the key-value pairs of parameters
-    params_dict = {}
-    
-    for param in params:
-        # Split each parameter into key and value
-        key, value = param.split('=')
-        
-        # Check the type of the value and convert accordingly
-        if value[0] == '"' and value[-1] == '"':
-            # String: Remove quotes and replace underscores with spaces
-            value = value[1:-1].replace('_', ' ')
-        elif '.' in value:
-            # Float
-            value = float(value)
-        else:
-            # Integer
-            value = int(value)
-        
-        # Add the key-value pair to the dictionary
-        params_dict[key] = value
+        if not args:
+            print("** class name missing **")
+            return
 
-    # Create an instance of the specified class with the given parameters
-    new_instance = HBNBCommand.classes[class_name](**params_dict)
-    
-    # Save the instance and print its ID
-    storage.save()
-    print(new_instance.id)
-    storage.save()
+        class_name = args[0]
 
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        if len(args) < 2:
+            print("** attribute name missing **")
+            return
+
+        # Extract parameters in the form of <key name>=<value>
+        params = ' '.join(args[1:])
+        param_dict = {}
+
+        # Split each parameter into key-value pairs
+        for param in params.split():
+            key, value = param.split('=')
+            param_dict[key] = value
+
+        # Create a new instance of the class with the given parameters
+        try:
+            new_instance = HBNBCommand.classes[class_name](**param_dict)
+            storage.save()
+            print(new_instance.id)
+            storage.save()
+        except Exception as e:
+            print(f"Error creating instance: {e}")
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
