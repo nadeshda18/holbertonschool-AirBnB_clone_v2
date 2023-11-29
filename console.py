@@ -155,6 +155,7 @@ def do_create(self, arg):
         new_instance = self.classes[class_name](**param_dict)
         storage.save()
         print(new_instance.id)
+            storage.save()
     except Exception as e:
         print(f"Error creating instance: {e}")
 
