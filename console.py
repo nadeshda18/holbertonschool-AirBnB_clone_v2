@@ -38,6 +38,7 @@ class HBNBCommand(cmd.Cmd):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
             print('(hbnb)')
+        return cmd.Cmd.preloop(self)
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax."""
@@ -137,26 +138,41 @@ def do_s(self, arg):
 
         # Extract parameters in the form of <key name>=<value>
         params = ' '.join(args[1:])
-        param_dict = {}
+        kwargs = {}
 
         # Split each parameter into key-value pairs
         for param in params.split():
-            key, value = param.split('=')
-            param_dict[key] = value
-        
-        for key, value in param_dict.items():
-            if isinstance(value, str):
-                param_dict[key] = value.replace('_', ' ')
+            if "=" not in param:
+                continue
+            key, value = param.split("=")
+
+            # Handle string values
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1].replace('\\"', '"')
+            # Handle float values
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    print(f"Error: Invalid float value for key {key}")
+                    continue
+            # Handle integer values
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    print(f"Error: Invalid integer value for key {key}")
+                    continue
+            kwargs[key] = value
 
         # Create a new instance of the class with the given parameters
         try:
-            new_instance = HBNBCommand.classes[class_name](**param_dict)
+            new_instance = HBNBCommand.classes[class_name](**kwargs)
             storage.save()
             print(new_instance.id)
             storage.save()
         except Exception as e:
             print(f"Error creating instance: {e}")
-
 
     def help_create(self):
         """Help information for the create method"""
@@ -355,4 +371,3 @@ def do_s(self, arg):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
-
