@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """Console Module"""
-from ast import excepthandler
 import cmd
 import sys
 import os.path
@@ -108,12 +107,7 @@ def do_s(self, arg):
     def do_EOF(self, arg):
         """Handles EOF to exit program"""
         print()
-        
-        try:
-            storage.save()
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            exit()
+        exit()
 
     def help_EOF(self):
         """Prints the help documentation for EOF"""
