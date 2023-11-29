@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Test file for the HBNBCommand console.
+"""
+
 
 import subprocess
 import unittest
@@ -8,6 +12,7 @@ from console import HBNBCommand
 from models.base_model import BaseModel
 from models.state import State
 from models.place import Place
+
 
 class TestConsole(unittest.TestCase):
     """Test cases for the HBNBCommand console."""
