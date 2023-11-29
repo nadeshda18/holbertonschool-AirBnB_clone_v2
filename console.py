@@ -2,6 +2,9 @@
 """Console Module"""
 import cmd
 import sys
+import os.path
+import unittest
+import os
 import subprocess
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -96,6 +99,11 @@ class HBNBCommand(cmd.Cmd):
         """Prints the help documentation for quit"""
         print("Exits the program with formatting\n")
 
+def do_s(self, arg):
+    """Placeholder for the 's' command"""
+    print("Command 's' is not recognized.")
+
+
     def do_EOF(self, arg):
         """Handles EOF to exit program"""
         print()
@@ -109,55 +117,45 @@ class HBNBCommand(cmd.Cmd):
         """Overrides the emptyline method of CMD"""
         pass
 
-def convert_to_type(value):
-    """Converts a string value to the appropriate data type."""
-    if value.startswith('"') and value.endswith('"'):
-        return value[1:-1].replace('_', ' ')  # Remove quotes and replace underscores
-    elif '.' in value:
-        return float(value)
-    else:
-        return int(value)
+    def do_create(self, arg):
+        """Create a new instance of a class with given parameters."""
+        args = arg.split()
 
-def do_create(self, arg):
-    """Create a new instance of a class with given parameters."""
-    args = arg.split()
+        if not args:
+            print("** class name missing **")
+            return
 
-    if not args:
-        print("** class name missing **")
-        return
+        class_name = args[0]
 
-    class_name = args[0]
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
 
-    if class_name not in self.classes:
-        print("** class doesn't exist **")
-        return
+        if len(args) < 2:
+            print("** attribute name missing **")
+            return
 
-    if len(args) < 2:
-        print("** attributes missing **")
-        return
+        # Extract parameters in the form of <key name>=<value>
+        params = ' '.join(args[1:])
+        param_dict = {}
 
-    # Extract parameters in the form of <key name>=<value>
-    params = ' '.join(args[1:])
-    param_dict = {}
+        # Split each parameter into key-value pairs
+        for param in params.split():
+            key, value = param.split('=')
+            param_dict[key] = value
+        
+        for key, value in param_dict.items():
+            if isinstance(value, str):
+                param_dict[key] = value.replace('_', ' ')
 
-    # Split each parameter into key-value pairs
-    for param in params.split():
-        key, value = param.split('=')
-        param_dict[key] = self.convert_to_type(value, key)
-
-    # Replace underscores with spaces in string values
-    for key, value in param_dict.items():
-        if isinstance(value, str):
-            param_dict[key] = value.replace('_', ' ')
-
-    # Create a new instance of the class with the given parameters
-    try:
-        new_instance = self.classes[class_name](**param_dict)
-        storage.save()
-        print(new_instance.id)
+        # Create a new instance of the class with the given parameters
+        try:
+            new_instance = HBNBCommand.classes[class_name](**param_dict)
             storage.save()
-    except Exception as e:
-        print(f"Error creating instance: {e}")
+            print(new_instance.id)
+            storage.save()
+        except Exception as e:
+            print(f"Error creating instance: {e}")
 
 
     def help_create(self):
