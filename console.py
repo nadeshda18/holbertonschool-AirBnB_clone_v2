@@ -109,6 +109,15 @@ class HBNBCommand(cmd.Cmd):
         """Overrides the emptyline method of CMD"""
         pass
 
+def convert_to_type(value):
+    """Converts a string value to the appropriate data type."""
+    if value.startswith('"') and value.endswith('"'):
+        return value[1:-1].replace('_', ' ')  # Remove quotes and replace underscores
+    elif '.' in value:
+        return float(value)
+    else:
+        return int(value)
+
 def do_create(self, arg):
     """Create a new instance of a class with given parameters."""
     args = arg.split()
@@ -119,7 +128,7 @@ def do_create(self, arg):
 
     class_name = args[0]
 
-    if class_name not in HBNBCommand.classes:
+    if class_name not in self.classes:
         print("** class doesn't exist **")
         return
 
@@ -134,7 +143,7 @@ def do_create(self, arg):
     # Split each parameter into key-value pairs
     for param in params.split():
         key, value = param.split('=')
-        param_dict[key] = value
+        param_dict[key] = self.convert_to_type(value, key)
 
     # Replace underscores with spaces in string values
     for key, value in param_dict.items():
@@ -143,7 +152,7 @@ def do_create(self, arg):
 
     # Create a new instance of the class with the given parameters
     try:
-        new_instance = HBNBCommand.classes[class_name](**param_dict)
+        new_instance = self.classes[class_name](**param_dict)
         storage.save()
         print(new_instance.id)
     except Exception as e:

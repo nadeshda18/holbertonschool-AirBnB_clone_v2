@@ -5,10 +5,6 @@ Test file for the HBNBCommand console.
 
 
 import subprocess
-import unittest
-import os
-import sys
-
 
 def test_params_create():
     # Define commands to create State and Place objects
@@ -40,12 +36,7 @@ def test_params_create():
     assert "latitude: 37.773972" in result.stdout
     assert "longitude: -122.431297" in result.stdout
 
-# Add the tests directory to the sys.path
-def mod_path():
-    import os.path
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-if __name__ == "__main__":
-    mod_path()  # Call the function to add the correct path
+
+if __name__ == "__main__": 
     test_params_create()
