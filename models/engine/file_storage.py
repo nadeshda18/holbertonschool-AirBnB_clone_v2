@@ -11,6 +11,8 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         if cls is not None:
+            if isinstance(cls, str):
+                cls = eval(cls)
             return {k: v for k, v in FileStorage.__objects.items() if isinstance(v, cls)}
         return FileStorage.__objects
 
