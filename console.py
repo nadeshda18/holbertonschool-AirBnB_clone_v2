@@ -84,7 +84,7 @@ class HBNBCommand(cmd.Cmd):
         except Exception as mess:
             pass
         finally:
-            return line
+            return line if super().precmd(line) is None else super().precmd(line)
 
     def postcmd(self, stop, line):
         """Prints if isatty is false"""
@@ -100,9 +100,9 @@ class HBNBCommand(cmd.Cmd):
         """Prints the help documentation for quit"""
         print("Exits the program with formatting\n")
 
-def do_s(self, arg):
-    """Placeholder for the 's' command"""
-    print("Command 's' is not recognized.")
+    def do_s(self, arg):
+        """Placeholder for the 's' command"""
+        print("Command 's' is not recognized.")
 
 
     def do_EOF(self, arg):
@@ -371,3 +371,63 @@ def do_s(self, arg):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+    class HBNBCommand(cmd.Cmd):
+        # Existing code...
+
+        def do_create(self, arg):
+            """Create a new instance of a class with given parameters."""
+            args = arg.split()
+
+            if not args:
+                print("** class name missing **")
+                return
+
+            class_name = args[0]
+
+            if class_name not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+                return
+
+            if len(args) < 2:
+                print("** attribute name missing **")
+                return
+
+            # Extract parameters in the form of <key name>=<value>
+            params = ' '.join(args[1:])
+            kwargs = {}
+
+            # Split each parameter into key-value pairs
+            for param in params.split():
+                if "=" not in param:
+                    continue
+                key, value = param.split("=")
+
+                # Handle string values
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1].replace('\\"', '"')
+                # Handle float values
+                elif "." in value:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        print(f"Error: Invalid float value for key {key}")
+                        continue
+                # Handle integer values
+                else:
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        print(f"Error: Invalid integer value for key {key}")
+                        continue
+                kwargs[key] = value
+
+            # Create a new instance of the class with the given parameters
+            try:
+                new_instance = HBNBCommand.classes[class_name](**kwargs)
+                storage.save()
+                print(new_instance.id)
+                storage.save()
+            except Exception as e:
+                print(f"Error creating instance: {e}")
+
+        # Existing code...
