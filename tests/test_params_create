@@ -1,6 +1,11 @@
+#!/usr/bin/env python3
+"""
+Test file for the console command with parameters.
+"""
+
 import subprocess
 import unittest
-import os
+import os.path
 import sys
 
 
@@ -44,4 +49,3 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 if __name__ == "__main__":
     test_params_create()
-    

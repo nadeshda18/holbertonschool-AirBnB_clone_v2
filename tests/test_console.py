@@ -6,6 +6,7 @@ Test file for the HBNBCommand console.
 
 import subprocess
 import unittest
+import os.path
 from io import StringIO
 from unittest.mock import patch
 from console import HBNBCommand
