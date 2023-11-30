@@ -1,6 +1,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from models.engine.file_storage import FileStorage
 
 
 class User(BaseModel, Base):

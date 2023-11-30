@@ -5,6 +5,7 @@ import sys
 import os.path
 import cmd
 import sys
+from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User

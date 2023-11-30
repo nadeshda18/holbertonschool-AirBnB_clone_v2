@@ -7,6 +7,7 @@ from console import HBNBCommand
 from models.base_model import BaseModel
 from models.state import State
 from models.place import Place
+from models.engine.file_storage import FileStorage
 
 
 class TestConsole(unittest.TestCase):

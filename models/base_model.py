@@ -7,6 +7,7 @@ from datetime import datetime
 import uuid
 import models
 import os
+from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel, Base
 from models.city import City
 from models.state import State
