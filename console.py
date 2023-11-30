@@ -2,6 +2,10 @@
 """Console Module"""
 import cmd
 import sys
+import os.path
+import unittest
+import os
+import subprocess
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -10,7 +14,6 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from datetime import datetime
 
 
 class HBNBCommand(cmd.Cmd):
@@ -35,6 +38,7 @@ class HBNBCommand(cmd.Cmd):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
             print('(hbnb)')
+        return cmd.Cmd.preloop(self)
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax."""
@@ -100,6 +104,7 @@ class HBNBCommand(cmd.Cmd):
         """Placeholder for the 's' command"""
         print("Command 's' is not recognized.")
 
+
     def do_EOF(self, arg):
         """Handles EOF to exit program"""
         print()
@@ -113,46 +118,61 @@ class HBNBCommand(cmd.Cmd):
         """Overrides the emptyline method of CMD"""
         pass
 
-    def do_create(self, args):
+    def do_create(self, arg):
         """Create a new instance of a class with given parameters."""
+        args = arg.split()
+
         if not args:
             print("** class name missing **")
             return
 
-        parts = args.split()
-        
-        class_name = parts[0]
+        class_name = args[0]
+
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        param_dict = {}  # initialize empty dictionary
-        for param in parts[1:]:
-            # Split the parameter into key-value
+        if len(args) < 2:
+            print("** attribute name missing **")
+            return
+
+        # Extract parameters in the form of <key name>=<value>
+        params = ' '.join(args[1:])
+        kwargs = {}
+
+        # Split each parameter into key-value pairs
+        for param in params.split():
+            if "=" not in param:
+                continue
             key, value = param.split("=")
 
-            # Strip the quotes from the value
-            if value.startswith('"'):
-                value = value[1:]
-            
-            value = value.replace('_', ' ')
-            
-            # Convert the value to the appropriate type (str, int, float, or int)
-            if '.' in value:
-                param_dict[key] = float(value)
-            elif value.isdigit():
-                param_dict[key] = int(value)
+            # Handle string values
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1].replace('\\"', '"')
+            # Handle float values
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    print(f"Error: Invalid float value for key {key}")
+                    continue
+            # Handle integer values
             else:
-                param_dict[key] = value
-        
-        param_dict.setdefault('update_at', datetime.now())
-        
+                try:
+                    value = int(value)
+                except ValueError:
+                    print(f"Error: Invalid integer value for key {key}")
+                    continue
+            kwargs[key] = value
+
         # Create a new instance of the class with the given parameters
-        new_instance = HBNBCommand.classes[class_name](**param_dict)
-        
-        # Save the new instance and print its id
-        storage.save()
-        print(new_instance.id)
+        try:
+            new_instance = HBNBCommand.classes[class_name](**kwargs)
+            storage.save()
+            print(new_instance.id)
+            storage.save()
+        except Exception as e:
+            print(f"Error creating instance: {e}")
 
     def help_create(self):
         """Help information for the create method"""
@@ -257,7 +277,7 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def help_count(self):
-        """Help information for the count command"""
+        """ """
         print("Usage: count <class_name>")
 
     def do_update(self, args):
