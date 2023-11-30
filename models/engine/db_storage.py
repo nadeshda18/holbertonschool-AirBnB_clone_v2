@@ -2,7 +2,6 @@
 """This module defines the DBStorage class for AirBnB"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.orm.session import make_transient
 from os import getenv
 from models.base_model import Base
 from models.city import City
@@ -53,7 +52,6 @@ class DBStorage:
 
     def new(self, obj):
         """Adds the object to the current database session"""
-        make_transient(obj)
         self.__session.add(obj)
 
     def save(self):
@@ -71,3 +69,7 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(Session)
+
+    def close(self):
+        """Close the session"""
+        self.__session.close()
