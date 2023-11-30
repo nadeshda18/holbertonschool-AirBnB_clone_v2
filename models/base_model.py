@@ -1,10 +1,19 @@
 #!/usr/bin/python3
 """ Base module for HBNB project """
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Integer, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 import uuid
 import models
+import os
+from models.base_model import BaseModel, Base
+from models.city import City
+from models.state import State
+from models.user import User
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 Base = declarative_base()
 

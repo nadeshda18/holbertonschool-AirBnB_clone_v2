@@ -1,6 +1,20 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
+from sqlalchemy import Column, String, DateTime, Integer, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+import uuid
+import models
+import os
+from models.base_model import BaseModel, Base
+from models.city import City
+from models.state import State
+from models.user import User
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 
 class FileStorage:
@@ -26,6 +40,12 @@ class FileStorage:
             temp = {key: val.to_dict() for key, val in FileStorage.__objects.items()}
             json.dump(temp, f)
 
+    def delete(self, obj=None):
+        """Deletes obj from __objects if it's inside"""
+        if obj is not None:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            FileStorage.__objects.pop(key, None)
+
     def reload(self):
         """Loads storage dictionary from file"""
         from models.base_model import BaseModel
@@ -50,8 +70,4 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
-    def delete(self, obj=None):
-        """Deletes obj from __objects if it's inside"""
-        if obj is not None:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            FileStorage.__objects.pop(key, None)
+
