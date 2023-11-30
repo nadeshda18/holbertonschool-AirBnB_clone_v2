@@ -5,6 +5,10 @@ from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 import os
+from models.user import User
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 class State(BaseModel, Base):
     """ The state class, contains state name """

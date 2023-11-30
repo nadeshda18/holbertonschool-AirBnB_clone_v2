@@ -1,10 +1,15 @@
 #!/usr/bin/python3
 """ City module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey
+from models.city import City
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 import os
 from models.state import State
+from models.user import User
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 class City(BaseModel, Base):
     """ The city class, contains state ID and links to state """
