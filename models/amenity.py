@@ -1,8 +1,13 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
-from models.base_model import BaseModel
-from models.engine.file_storage import FileStorage
+""" Amenity Module for HBNB project """
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 
+class Amenity(BaseModel, Base):
+    """This class defines a Amenity class for AirBnB"""
+    __tablename__ = 'amenities'
+    name = Column(String(128), nullable=False)
 
-class Amenity(BaseModel):
-    name = ""
+    # Relationship Many-to-Many with Place
+    place_amenities = relationship("Place", secondary="place_amenity", back_populates="amenities")
