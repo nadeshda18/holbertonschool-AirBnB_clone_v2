@@ -1,11 +1,7 @@
 #!/usr/bin/python3
-"""Console Module"""
+""" Console Module """
 import cmd
 import sys
-import os.path
-import unittest
-import os
-import subprocess
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -14,10 +10,10 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from datetime import datetime
 
 class HBNBCommand(cmd.Cmd):
-    """Contains the functionality for the HBNB console"""
+    """ Contains the functionality for the HBNB console"""
 
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
@@ -38,7 +34,6 @@ class HBNBCommand(cmd.Cmd):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
             print('(hbnb)')
-        return cmd.Cmd.preloop(self)
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax."""
@@ -118,61 +113,52 @@ class HBNBCommand(cmd.Cmd):
         """Overrides the emptyline method of CMD"""
         pass
 
-    def do_create(self, arg):
+    def do_create(self, args):
         """Create a new instance of a class with given parameters."""
-        args = arg.split()
-
+        
         if not args:
             print("** class name missing **")
             return
 
-        class_name = args[0]
-
+        parts = args.split()
+        
+        class_name = parts[0]
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        if len(args) < 2:
-            print("** attribute name missing **")
-            return
-
-        # Extract parameters in the form of <key name>=<value>
-        params = ' '.join(args[1:])
-        kwargs = {}
-
-        # Split each parameter into key-value pairs
-        for param in params.split():
-            if "=" not in param:
-                continue
+        param_dict = {}  # initialize empty dictionary
+        for param in parts[1:]:
+            # Split the parameter into key-value
             key, value = param.split("=")
 
-            # Handle string values
-            if value.startswith('"') and value.endswith('"'):
-                value = value[1:-1].replace('\\"', '"')
-            # Handle float values
-            elif "." in value:
-                try:
-                    value = float(value)
-                except ValueError:
-                    print(f"Error: Invalid float value for key {key}")
-                    continue
-            # Handle integer values
+            # Strip the quotes from the value
+            if value.startswith('"'):
+                value = value[1:]
+            
+            value = value.replace('_', ' ')
+            
+            # Convert the value to the appropriate type (str, int, float or int)
+            if '.' in value:
+                param_dict[key] = float(value)
+            elif value.isdigit():
+                param_dict[key] = int(value)
             else:
-                try:
-                    value = int(value)
-                except ValueError:
-                    print(f"Error: Invalid integer value for key {key}")
-                    continue
-            kwargs[key] = value
+                param_dict[key] = value
+        
+        param_dict.setdefault('updated_at', datetime.now())
 
-        # Create a new instance of the class with the given parameters
-        try:
-            new_instance = HBNBCommand.classes[class_name](**kwargs)
-            storage.save()
-            print(new_instance.id)
+        # Create an instance of the class with the provided parameters
+        new_instance = HBNBCommand.classes[class_name](**param_dict)
 
-        except Exception as e:
-            print(f"Error creating instance: {e}")
+        # Save the instance and print its ID
+        storage.save()
+        print(new_instance.id)
+
+        # Save the new instance and print its id
+        storage.save()
+        print(new_instance.id)
+
 
     def help_create(self):
         """Help information for the create method"""
