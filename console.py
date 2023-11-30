@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Console Module """
+"""Console Module"""
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -12,8 +12,9 @@ from models.amenity import Amenity
 from models.review import Review
 from datetime import datetime
 
+
 class HBNBCommand(cmd.Cmd):
-    """ Contains the functionality for the HBNB console"""
+    """Contains the functionality for the HBNB console"""
 
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
@@ -99,7 +100,6 @@ class HBNBCommand(cmd.Cmd):
         """Placeholder for the 's' command"""
         print("Command 's' is not recognized.")
 
-
     def do_EOF(self, arg):
         """Handles EOF to exit program"""
         print()
@@ -115,7 +115,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """Create a new instance of a class with given parameters."""
-        
         if not args:
             print("** class name missing **")
             return
@@ -138,7 +137,7 @@ class HBNBCommand(cmd.Cmd):
             
             value = value.replace('_', ' ')
             
-            # Convert the value to the appropriate type (str, int, float or int)
+            # Convert the value to the appropriate type (str, int, float, or int)
             if '.' in value:
                 param_dict[key] = float(value)
             elif value.isdigit():
@@ -146,19 +145,14 @@ class HBNBCommand(cmd.Cmd):
             else:
                 param_dict[key] = value
         
-        param_dict.setdefault('updated_at', datetime.now())
-
-        # Create an instance of the class with the provided parameters
+        param_dict.setdefault('update_at', datetime.now())
+        
+        # Create a new instance of the class with the given parameters
         new_instance = HBNBCommand.classes[class_name](**param_dict)
-
-        # Save the instance and print its ID
-        storage.save()
-        print(new_instance.id)
-
+        
         # Save the new instance and print its id
         storage.save()
         print(new_instance.id)
-
 
     def help_create(self):
         """Help information for the create method"""
@@ -263,7 +257,7 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def help_count(self):
-        """ """
+        """Help information for the count command"""
         print("Usage: count <class_name>")
 
     def do_update(self, args):
