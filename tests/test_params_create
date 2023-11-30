@@ -5,22 +5,60 @@ Test file for the console command with parameters.
 
 import subprocess
 import unittest
-import os.path
-import sys
+
+def create_state_commands():
+    # Define commands to create State objects
+    return [
+        'create State name="California"',  # Create a State object with the name "California"
+        'create State name="Arizona"',      # Create another State object with the name "Arizona"
+        'all State'                          # Display all State objects
+    ]
+
+def create_place_commands():
+    # Define commands to create Place objects
+    return [
+        'create Place city_id="0001" user_id="0001" name="My_little_house" number_rooms=4 number_bathrooms=2 max_guest=10 price_by_night=300 latitude=37.773972 longitude=-122.431297',  # Create a Place object with specified parameters
+        'all Place'                          # Display all Place objects
+    ]
 
 class TestParamsCreate(unittest.TestCase):
     def test_params_create(self):
-        # Define commands to create State and Place objects
-        state_commands = [
-            'create State name="California"',
-            'create State name="Arizona"',
-            'all State'
-        ]
+        # Generate commands for State and Place objects
+        state_commands = create_state_commands()
+        place_commands = create_place_commands()
 
-        place_commands = [
-            'create Place city_id="0001" user_id="0001" name="My_little_house" number_rooms=4 number_bathrooms=2 max_guest=10 price_by_night=300 latitude=37.773972 longitude=-122.431297',
-            'all Place'
-        ]
+        # Concatenate all commands
+        all_commands = '\n'.join(state_commands + place_commands)
+
+        # Run the commands using subprocess
+        result = subprocess.run(['echo', all_commands, '|', './console.py'], text=True, capture_output=True, shell=True)
+        
+        # Check if the output contains the expected results
+        self.assertIn("California", result.stdout)
+        self.assertIn("Arizona", result.stdout)
+        self.assertIn("My_little_house", result.stdout)
+        self.assertIn("number_rooms: 4", result.stdout)
+        self.assertIn("number_bathrooms: 2", result.stdout)
+        self.assertIn("max_guest: 10", result.stdout)
+        self.assertIn("price_by_night: 300", result.stdout)
+        self.assertIn("latitude: 37.773972", result.stdout)
+        self.assertIn("longitude: -122.431297", result.stdout)
+
+if __name__ == "__main__":
+    unittest.main()
+
+def create_place_commands():
+    # Define commands to create Place objects
+    return [
+        'create Place city_id="0001" user_id="0001" name="My_little_house" number_rooms=4 number_bathrooms=2 max_guest=10 price_by_night=300 latitude=37.773972 longitude=-122.431297',  # Create a Place object with specified parameters
+        'all Place'                          # Display all Place objects
+    ]
+
+class TestParamsCreate(unittest.TestCase):
+    def test_params_create(self):
+        # Generate commands for State and Place objects
+        state_commands = create_state_commands()
+        place_commands = create_place_commands()
 
         # Concatenate all commands
         all_commands = '\n'.join(state_commands + place_commands)
