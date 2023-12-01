@@ -17,7 +17,7 @@ if models.storage_t == 'db':
                                  primary_key=True))
 
 
-class Place(BaseModel, Base):
+class Place(BaseModel):
     """Representation of Place """
     if models.storage_t == 'db':
         __tablename__ = 'places'
