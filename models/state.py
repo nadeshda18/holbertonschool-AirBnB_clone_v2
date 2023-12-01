@@ -10,19 +10,25 @@ from models.city import City
 
 class State(BaseModel, Base):
     """ State class """
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        cities = relationship("City", backref="state",
-                              cascade="all, delete, delete-orphan")
+        __tablename__ = 'states'
+        name = Column(String(128), nullable=False)
+        if getenv('HBNB_TYPE_STORAGE') == 'db':
+            cities = relationship("City", backref="state",
+                                  cascade="all, delete, delete-orphan")
     else:
-        class State(BaseModel):
+        name = ""
 
-            @property
-            def cities(self):
-                """Returns the list of City instances
-                with state_id equals to the current State.id"""
-                from models import storage
-                all_cities = storage.all(City)
-                return [city for city in all_cities.values()
-                        if city.state_id == self.id]
+    def __init__(self, *args, **kwargs):
+        """initializes State"""
+        super().__init__(*args, **kwargs)
+
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        @property
+        def cities(self):
+            """Returns the list of City instances
+            with state_id equals to the current State.id"""
+            from models import storage
+            all_cities = storage.all(City)
+            return [city for city in all_cities.values()
+                    if city.state_id == self.id]
