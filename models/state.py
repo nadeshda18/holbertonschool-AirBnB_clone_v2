@@ -1,41 +1,28 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
-from models.base_model import BaseModel
-from datetime import datetime
-import uuid
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from os import getenv
+from models.city import City
 
 
 class State(BaseModel):
     """ State class """
-    name = ""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if not kwargs.get("id"):
-            self.id = str(uuid.uuid4())
-
-        if not kwargs.get("created_at"):
-            self.created_at = datetime.now()
-
-        # if not kwargs.get("updated_at"):
-        #    self.updated_at = datetime.now()
-
-        if not kwargs.get("name"):
-            self.name = ""
-
-        if isinstance(self.created_at, str):
-            self.created_at = datetime.strptime(
-                self.created_at, "%Y-%m-%dT%H:%M:%S.%f")
-
-        # if isinstance(self.updated_at, str):
-            # self.updated_at = datetime.strptime(
-            # self.updated_at, "%Y-%m-%dT%H:%M:%S.%f")
-
-    def __str__(self):
-        """Returns a string representation of the instance"""
-        cls_name = self.__class__.__name__
-        return '[{}] ({}) {}'.format(
-            cls_name, self.id, {
-                k: v for k, v in self.__dict__.items() if k != 'updated_at'}
-        )
+    __tablename__ = 'states'
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        name = Column(String(128), nullable=False)
+        cities = relationship(
+            "City", cascade="all, delete-orphan", backref="state")
+    else:
+        @property
+        def cities(self):
+            """Returns the list of City Instances
+            with state_id equals to the current State.id"""
+            from models import storage
+            all_cities = storage.all(City)
+            state_cities = []
+            for city in all_cities.values():
+                if city.state_id == self.id:
+                    state_cities.append(city)
+            return state_cities
