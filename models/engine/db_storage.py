@@ -27,7 +27,6 @@ class DBStorage:
         pwd = getenv("HBNB_MYSQL_PWD")
         host = getenv("HBNB_MYSQL_HOST")
         db = getenv("HBNB_MYSQL_DB")
-
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
                                       format(user, pwd, host, db),
                                       pool_pre_ping=True)
@@ -38,13 +37,13 @@ class DBStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         storage_dict = {}
-        if cls:
-            for key, value in classes.items():
-                for obj in self.__session.query(value).all():
+        if cls is None:
+            for value in classes.values():
+                for obj in self.__session.query(value):
                     key = obj.__class__.__name__ + "." + obj.id
-                storage_dict[key] = obj
-        else:
-            for obj in self.__session.query(cls).all():
+                    storage_dict[key] = obj
+        if cls in classes:
+            for obj in self.__session.query(classes[cls]):
                 key = obj.__class__.__name__ + "." + obj.id
                 storage_dict[key] = obj
         return storage_dict
@@ -74,3 +73,5 @@ class DBStorage:
     def close(self):
         """Close the session"""
         self.__session.close()
+
+
