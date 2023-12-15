@@ -1,18 +1,12 @@
-header {
-	background-color: white;
-	height: 70px;
-	width: 100%;
-	
-	border-bottom: 1px solid #CCCCCC;
+body{
+    margin: 0;
+    padding: 0;
+    color: #484848;
+    font-size: 14px;
+    font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#header_logo {
-	height: 100%;
-	width: 142px;
-
-	background-image: url("../images/logo.png");
-	background-repeat: no-repeat;
-	background-position: center;
-
-	margin-left: 20px;
+.container{
+    max-width: 1000px;
+    margin: 30px auto 30px auto;
 }
