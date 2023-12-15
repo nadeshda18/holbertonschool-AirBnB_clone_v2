@@ -1,5 +1,10 @@
 #!/usr/bin/python3
-"""Starts a Flask web application"""
+"""Starts a Flask web application.
+
+The application listens on 0.0.0.0, port 5000.
+Routes:
+    /states_list: HTML page with a list of all State objects in DBStorage.
+"""
 from flask import Flask, render_template
 from models import storage
 from models.state import State
