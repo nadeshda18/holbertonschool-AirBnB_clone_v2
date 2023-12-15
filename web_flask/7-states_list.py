@@ -102,25 +102,20 @@ def number_odd_or_even(n):
     return render_template("6-number_odd_or_even.html", n=n)
 
 
-@app.route("/states_list", strict_slashes=False)
-def states_list():
-    """List states
-
-    Returns:
-        str: HTML template
-    """
-    states = storage.all(State)
-    return render_template("7-states_list.html", states=states)
-
-
 @app.teardown_appcontext
-def teardown_db(exception):
+def teardown_db(self):
     """Close the db connection
 
     Args:
         exception (str): exception to close
     """
     storage.close()
+
+
+@app.route('/states_list', strict_slashes=False)
+def states_list():
+    states = storage.all(State)
+    return render_template('7-states_list.html', states=states)
 
 
 if __name__ == "__main__":
