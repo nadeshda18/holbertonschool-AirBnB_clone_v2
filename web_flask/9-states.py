@@ -8,20 +8,15 @@ app = Flask(__name__)
 
 
 @app.route('/states', strict_slashes=False)
-def states():
-    states = storage.all(State).values()
-    states = sorted(states, key=lambda state: state.name)
-    return render_template('9-states.html', states=states)
-
-
 @app.route('/states/<id>', strict_slashes=False)
-def states_id(id):
-    state = storage.get(State, id)
-    if state is not None:
-        state.cities = sorted(state.cities, key=lambda city: city.name)
-    else:
-        state = None
-    return render_template('9-states.html', state=state)
+def states(id=None):
+    state_dic = storage.all(State)
+    state = None
+    for obj in state_dic.values():
+        if obj.id == id:
+            state = obj
+    return render_template('9-states.html', states=state_dic, id=id,
+                           state=state)
 
 
 @app.teardown_appcontext
