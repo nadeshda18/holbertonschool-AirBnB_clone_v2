@@ -1,8 +1,11 @@
 #!/usr/bin/python3
+
 """Starts a Flask web application"""
 from flask import Flask, render_template
 from models import storage
 from models.state import State
+
+# create an instance of the Flask class
 app = Flask(__name__)
 storage.init()
 
@@ -63,5 +66,7 @@ def teardown_db(exception):
     storage.close()
 
 
+# check if the script is run directly and not imported
 if __name__ == "__main__":
+    # start the web server
     app.run(host="0.0.0.0", port=5000)
