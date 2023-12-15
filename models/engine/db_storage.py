@@ -70,6 +70,13 @@ class DBStorage:
         Session = scoped_session(session_factory)
         self.__session = Session()
 
+    def get(self, cls, id):
+        """Get a specific object of a certain class with a specific id"""
+        if cls not in classes.values():
+            return None
+        objs = self.__session.query(cls).filter(cls.id == id).first()
+        return objs
+
     def close(self):
         """Close the session"""
         self.__session.close()
