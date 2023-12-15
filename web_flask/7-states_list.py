@@ -103,7 +103,7 @@ def number_odd_or_even(n):
 
 
 @app.teardown_appcontext
-def teardown_db(self):
+def teardown_db(exception):
     """Close the db connection
 
     Args:
@@ -114,9 +114,10 @@ def teardown_db(self):
 
 @app.route('/states_list', strict_slashes=False)
 def states_list():
-    states = storage.all(State)
+    states = storage.all('State').values()
+    states = sorted(states, key=lambda state: state.name)
     return render_template('7-states_list.html', states=states)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host='0.0.0.0', port=5000)
