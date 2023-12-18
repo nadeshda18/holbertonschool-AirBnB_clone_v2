@@ -5,17 +5,31 @@ from models import storage
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
+from os import environ
 
 app = Flask(__name__)
 
 
-@app.route('/hbnb_filters', strict_slashes=False)
+@app.route('/hbnb_filters')
 def hbnb_filters():
-    states = sorted(storage.all(State).values(), key=lambda state: state.name)
-    cities = sorted(storage.all(City).values(), key=lambda city: city.name)
-    amenities = sorted(storage.all(Amenity).values(),
-                       key=lambda amenity: amenity.name)
-    return render_template('10-hbnb_filters.html', states=states, cities=cities, amenities=amenities)
+    """
+    Display a HTML page like 6-index.html, but with a filters box
+
+    Returns:
+        HTML: HTML page with list of all City objects
+    """
+    states = storage.all(State).values()
+    amenities = storage.all(Amenity).values()
+
+    if environ.get('HBNB_TYPE_STORAGE') == 'db':
+        cities = storage.all(City).values()
+    else:
+        cities = {}
+
+    dropdown_data = [{'value': state.id, 'label': state.name}
+                     for state in states]
+
+    return render_template('10-hbnb_filters.html', states=states, cities=cities, amenities=amenities, dropdown_data=dropdown_data)
 
 
 @app.teardown_appcontext
